@@ -1,17 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
 package vista;
 
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import logica.Producto;
 
-/**
- *
- * @author Fabrizio
- */
 public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
 
     /**
@@ -66,6 +58,7 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
         jLabel2.setText("Filtrar por categoría:");
 
         jcbFiltrarPorCategoria.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Comestible", "Limpieza", "Perfumería" }));
+        jcbFiltrarPorCategoria.setSelectedIndex(-1);
         jcbFiltrarPorCategoria.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcbFiltrarPorCategoriaActionPerformed(evt);
@@ -96,10 +89,21 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
         jLabel7.setText("Stock:");
 
         jcbRubro.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Comestible", "Limpieza", "Perfumería" }));
+        jcbRubro.setSelectedIndex(-1);
 
         jbConsultar.setText("Consultar");
+        jbConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbConsultarActionPerformed(evt);
+            }
+        });
 
         jbCerrar.setText("Cerrar");
+        jbCerrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbCerrarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -132,11 +136,11 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
                                     .addComponent(jLabel6)
                                     .addComponent(jLabel5))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jtfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jtfDescripcion, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jtfCodigo, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                             .addComponent(jcbRubro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jtfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jtfDescripcion)
+                            .addComponent(jtfPrecio))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
         jPanel1Layout.setVerticalGroup(
@@ -176,6 +180,11 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
         );
 
         jbNuevo.setText("Nuevo");
+        jbNuevo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbNuevoActionPerformed(evt);
+            }
+        });
 
         jbGuardar.setText("Guardar");
         jbGuardar.addActionListener(new java.awt.event.ActionListener() {
@@ -185,8 +194,18 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
         });
 
         jbActualizar.setText("Actualizar");
+        jbActualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbActualizarActionPerformed(evt);
+            }
+        });
 
         jbEliminar.setText("Eliminar");
+        jbEliminar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbEliminarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -261,23 +280,32 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jbGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGuardarActionPerformed
+        // obtiene los datos ingresados en los campos de texto y combobox
         int codigo = Integer.parseInt(jtfCodigo.getText());
         String descripcion = jtfDescripcion.getText();
         Double precio = Double.parseDouble(jtfPrecio.getText());
         String rubro = (String) jcbRubro.getSelectedItem();
         int stock = ((Number) jsStock.getValue()).intValue();
+        // crea un nuevo objeto producto con los datos ingresados
         Producto producto = new Producto(codigo, descripcion, precio, stock, rubro);
+        // agrega el producto al conjunto de productos
         DeTodoSA.productosSet.add(producto);
-        JOptionPane.showMessageDialog(this, "Producto agregado con éxito", "Info", JOptionPane.INFORMATION_MESSAGE);
+        // muestra un mensaje de confirmacion
+        JOptionPane.showMessageDialog(this, "Producto agregado con exito");
     }//GEN-LAST:event_jbGuardarActionPerformed
 
     private void jcbFiltrarPorCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbFiltrarPorCategoriaActionPerformed
+        // obtiene el modelo de la tabla para poder modificar sus filas
         DefaultTableModel modelo = (DefaultTableModel) jtProductos.getModel();
 
+        // obtiene la categoria seleccionada en el combobox
         String categoriaSeleccionada = (String) jcbFiltrarPorCategoria.getSelectedItem();
 
+        // recorre todos los productos del conjunto
         for (Producto p : DeTodoSA.productosSet) {
-            if (p.getRubro().equals(categoriaSeleccionada)) { // filtrar por categoría
+            // si el rubro del producto coincide con la categoria seleccionada
+            if (p.getRubro().equals(categoriaSeleccionada)) {
+                // crea un array con los datos del producto
                 Object[] fila = {
                     p.getCodigo(),
                     p.getDescripcion(),
@@ -285,10 +313,94 @@ public class jifAdministracionDeProductos extends javax.swing.JInternalFrame {
                     p.getRubro(),
                     p.getStock()
                 };
+                // inserta la fila al inicio de la tabla
                 modelo.insertRow(0, fila);
             }
         }
     }//GEN-LAST:event_jcbFiltrarPorCategoriaActionPerformed
+
+    private void jbConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbConsultarActionPerformed
+        // obtiene el codigo ingresado en el campo de texto
+        int codigo = Integer.parseInt(jtfCodigo.getText());
+
+        // variable para verificar si el producto existe
+        boolean existe = false;
+        // recorre todos los productos para ver si alguno tiene el codigo ingresado
+        for (Producto p : DeTodoSA.productosSet) {
+            if (codigo == p.getCodigo()) {
+                existe = true;
+                break;
+            }
+        }
+        // muestra un mensaje segun si existe o no
+        if (existe == true) {
+            JOptionPane.showMessageDialog(this, "El producto ya existe");
+        } else {
+            JOptionPane.showMessageDialog(this, "El producto aun no existe, podes agregarlo");
+        }
+    }//GEN-LAST:event_jbConsultarActionPerformed
+
+    private void jbCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbCerrarActionPerformed
+        this.dispose();
+    }//GEN-LAST:event_jbCerrarActionPerformed
+
+    private void jbNuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbNuevoActionPerformed
+        jtfCodigo.setText("");
+        jtfDescripcion.setText("");
+        jtfPrecio.setText("");
+        jcbRubro.setSelectedItem("");
+        jsStock.setValue(0);
+    }//GEN-LAST:event_jbNuevoActionPerformed
+
+    private void jbActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbActualizarActionPerformed
+        // obtiene el modelo de la tabla para poder modificarla
+        DefaultTableModel modelo = (DefaultTableModel) jtProductos.getModel();
+
+        // limpia todas las filas de la tabla
+        modelo.setRowCount(0);
+
+        // obtiene la categoria seleccionada para filtrar
+        String categoriaSeleccionada = (String) jcbFiltrarPorCategoria.getSelectedItem();
+
+        // recorre todos los productos
+        for (Producto p : DeTodoSA.productosSet) {
+            // si no hay categoria seleccionada o el producto coincide con la seleccion
+            if (categoriaSeleccionada == null || categoriaSeleccionada.isEmpty() || p.getRubro().equals(categoriaSeleccionada)) {
+                // crea un array con los datos del producto
+                Object[] fila = {
+                    p.getCodigo(),
+                    p.getDescripcion(),
+                    p.getPrecio(),
+                    p.getRubro(),
+                    p.getStock()
+                };
+                // agrega la fila al final de la tabla
+                modelo.addRow(fila);
+            }
+        }
+    }//GEN-LAST:event_jbActualizarActionPerformed
+
+    private void jbEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbEliminarActionPerformed
+        // obtiene el codigo ingresado para eliminar
+        int codigo = Integer.parseInt(jtfCodigo.getText());
+        Producto aEliminar = null;
+
+        // busca el producto con el codigo ingresado
+        for (Producto p : DeTodoSA.productosSet) {
+            if (p.getCodigo() == codigo) {
+                aEliminar = p;
+                break;
+            }
+        }
+        // si se encontro, lo elimina del conjunto y muestra mensaje
+        if (aEliminar != null) {
+            DeTodoSA.productosSet.remove(aEliminar);
+            JOptionPane.showMessageDialog(this, "Producto eliminado con exito");
+        } else {
+            // si no se encontro, muestra mensaje de error
+            JOptionPane.showMessageDialog(this, "No se encontr el producto");
+        }
+    }//GEN-LAST:event_jbEliminarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
